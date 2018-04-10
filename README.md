@@ -1,7 +1,7 @@
 # Lab-Efficient-Algorithms
 ## test.py
 test wird aufgerufen mit:
-python test.py <task-order>
+python test.py `<task-order>`
 
 Das Skript sucht nach den Dateien
   * test.cases
