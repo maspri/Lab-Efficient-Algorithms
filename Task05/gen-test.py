@@ -111,7 +111,7 @@ if __name__ == '__main__':
     #this is to test the correctness of the brute-force mincost finder
     #do_test()
 
-    if len(sys.argv == 6):
+    if len(sys.argv) == 6:
         gen_test_cases(int(sys.argv[1]),int(sys.argv[2]),int(sys.argv[3]),int(sys.argv[4]),float(sys.argv[5]))
     else:
         gen_test_cases(7, 7, 30, 5, 0.5)
