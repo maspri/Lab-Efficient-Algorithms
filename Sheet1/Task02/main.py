@@ -18,7 +18,19 @@ for i in range(1, cnt+1):
         print(int(m*n / 2))
     elif type == 'Q':
         # every queen has its own column, row and diagonal
-        print(m)
+        if m > 3:
+            print(m)
+        elif m == 3 && n > 3:
+            print(3)
+        elif m == 3 && n == 3:
+            print(2)
+        elif m == 2 && n > 2:
+            print(2)
+        elif m == 2 && n == 2:
+            print(1)
+        else:
+            print(1)
+    
     elif type == 'r':
         # place one rook on each diagonal
         print(m)
@@ -43,4 +55,4 @@ for i in range(1, cnt+1):
         if new_n is even  new_n/2 gets the number of columns in which kings are positioned
         if new_n is odd the ceiling of .5 to the next integer yields the correct amount
         '''
-        print(int(kings))
+        print(int(math.ceil(n/2)*math.ceil(m/2)))
