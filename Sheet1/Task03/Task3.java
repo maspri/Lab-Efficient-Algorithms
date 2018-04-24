@@ -1,5 +1,3 @@
-package de.informatikBonn.Sheet1;
-
 import java.util.Scanner;
 
 public class Task3 {
