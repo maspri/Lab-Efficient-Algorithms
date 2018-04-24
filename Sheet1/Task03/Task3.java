@@ -23,7 +23,7 @@ public class Task3 {
 
     public static void main(String[] args) {
 	// write your code here
-        try(Scanner scanner = new Scanner(System.console().reader())){
+        try(Scanner scanner = new Scanner(System.in)){
             int persons = scanner.nextInt();
             int budget = scanner.nextInt();
             int accommodations = scanner.nextInt();
