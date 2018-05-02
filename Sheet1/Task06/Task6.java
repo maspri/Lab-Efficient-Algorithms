@@ -1,12 +1,10 @@
-package de.informatikBonn.Sheet1;
-
 import java.math.BigInteger;
 import java.util.Scanner;
 
 public class Task6 {
 
     public static void main(String [] args){
-        try(Scanner scanner = new Scanner(System.console().reader())) {
+        try(Scanner scanner = new Scanner(System.in)) {
             while (scanner.hasNext()){
                 int n = scanner.nextInt();
                 BigInteger k = new BigInteger(scanner.next(),10);
