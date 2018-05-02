@@ -107,9 +107,8 @@ def do_test():
 if __name__ == '__main__':
 
     #this is to test the correctness of the brute-force mincost finder
-    #do_test()
-
-    if len(sys.argv) == 4:
-        gen_test_cases(int(sys.argv[1]),int(sys.argv[2]),int(sys.argv[3]))
-    else:
-        gen_test_cases(30, 5, 0.5)
+    do_test()
+    #if len(sys.argv) == 4:
+    #    gen_test_cases(int(sys.argv[1]),int(sys.argv[2]),int(sys.argv[3]))
+    #else:
+    #    gen_test_cases(30, 5, 0.5)
