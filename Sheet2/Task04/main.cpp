@@ -15,19 +15,22 @@ element* _find(element *v){
     if(v->parent == nullptr){
         return v;
     } else {
-        v->parent = _find(v->parent);
+        //v->parent = _find(v->parent);
         return _find(v->parent);
     }
 }
  void _union(element *v,element *w){
-    if (_find(v) != _find(w)){
-        if(v->rank == w->rank){
-            w->parent = v;
-            v->rank++;
-        } else if (v->rank > w->rank){
-            w->parent = v;
+     element *rootv = _find(v);
+     element *rootw = _find(w);
+
+    if (rootv != rootw){
+        if(rootv->rank == rootw->rank){
+            rootw->parent = rootv;
+            rootv->rank++;
+        } else if (rootv->rank > rootw->rank){
+            rootw->parent = rootv;
         } else{
-            v->parent = w;
+            rootv->parent = rootw;
         }
     }
 }
@@ -45,7 +48,6 @@ int main() {
         vector<element> elements(n+1,element());
         int success=0,fail=0;
 
-
         for (int j = 0; j < num_events; ++j) {
             char event_type = '\0';
             int v=0,w=0;
@@ -55,8 +57,10 @@ int main() {
                 _union(&elements[v],&elements[w]);
             } else if (event_type == 'q'){
                 if (_find(&elements[v]) == _find(&elements[w])){
+                    //cout << "q " << v << " " << w << " success" << endl;
                     success++;
                 } else {
+                    //cout << "q " << v << " " << w << " fail" << endl;
                     fail++;
                 }
             }
