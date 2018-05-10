@@ -4,6 +4,7 @@ import glob
 import os
 import sys
 import platform
+import difflib
 from timeit import default_timer as timer
 
 class bcolors:
@@ -61,8 +62,14 @@ def test_program(program, testcases):
         else:
             print(colors.FAIL + "Test "+str(i)+" for program \"" +program+"\" failed." + colors.ENDC)
             print(colors.FAIL + "Time: "+str(elapsed_time)+ colors.ENDC)
-            print(colors.BOLD + "Expected Output:\n" + expOut + colors.ENDC)
-            print(colors.FAIL + "Given Output:\n" + ret.stdout + colors.ENDC)
+            #print(colors.BOLD + "Expected Output:\n" + expOut + colors.ENDC)
+            #print(colors.FAIL + "Given Output:\n" + ret.stdout + colors.ENDC)
+            diff = difflib.context_diff(expOut.split('\n'),ret.stdout.split('\n'),'Expected','Given')
+            sys.stdout.writelines(diff)
+            
+            diffhtml = difflib.HtmlDiff().make_file(expOut.split('\n'),ret.stdout.split('\n'),'Expected','Given')
+            with open('diff.html','w') as f:
+                f.writelines(diffhtml)
 
 def test_folder(folder):
     """

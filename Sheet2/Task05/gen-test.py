@@ -10,12 +10,12 @@ def calc_max_freqs(parts,queries):
                     max_freq = max(max_freq,amount)
                 elif i > right or j < left:
                     continue
+                elif left <= i and i <= right and left <= j and j <= right:
+                    max_freq = max(max_freq,j-i+1)
                 elif left <= i and i <= right:
                     max_freq = max(max_freq,right-i+1)
                 elif left <= j and j <= right:
                     max_freq = max(max_freq,j-left+1)
-                else:
-                    max_freq = max(max_freq,j-i+1)
             f.write(str(max_freq)+'\n')
 
 def gen_test(n,q,max_reps):
