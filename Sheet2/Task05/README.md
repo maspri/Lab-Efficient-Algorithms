@@ -1,10 +1,12 @@
 ## gen-test.py
 wird aufgerufen mit:
+
 python gen-test.py `<n>` `<q>` `<max-reps>`
 wobei 
   * `<n>` - Anzahl Zahlen
   * `<q>` - Anzahl Queries
   * `<max-reps>` - maximale Anzahl an Wiederholungen einer Zahl
+
 oder 
 python gen-test.py
 
