@@ -60,7 +60,7 @@ def gen_test(n,q,max_reps):
 if __name__ == '__main__':
     n = random.randint(1,100000)
     q = random.randint(1,100000)
-    max_reps = 10000
+    max_reps = 5000
     if len(sys.argv) == 4:
         n = int(sys.argv[1])
         q = int(sys.argv[2])
