@@ -58,7 +58,13 @@ def test_program(program, testcases):
         if ret.stdout == expOut:
             print(colors.OKGREEN + "Test "+str(i)+" for program \"" +program+"\" successful."+ colors.ENDC)
             print(colors.OKGREEN + "Time: "+str(elapsed_time)+ colors.ENDC)
-            print(colors.OKGREEN + "Output:\n" +ret.stdout + colors.ENDC)
+            print(colors.OKGREEN + "Output:\n"+colors.ENDC)
+            for j,line in enumerate(ret.stdout.split('\n')):
+                print(colors.OKGREEN +line+colors.ENDC)
+                if j >= 20:
+                    print(colors.OKGREEN + "..."+colors.ENDC)
+                    break
+                
         else:
             print(colors.FAIL + "Test "+str(i)+" for program \"" +program+"\" failed." + colors.ENDC)
             print(colors.FAIL + "Time: "+str(elapsed_time)+ colors.ENDC)
