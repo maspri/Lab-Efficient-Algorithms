@@ -6,57 +6,48 @@ using namespace std;
 
 typedef vector<vector<int>> field_type;
 
+int kadane(const vector<int> sums){
+    int max_subsum_i = sums[0];
+    int maximum = sums[0];
+    for (int i = 1; i < sums.size(); ++i) {
+        max_subsum_i = max(sums[i],max_subsum_i+sums[i]);
+        maximum = max(maximum,max_subsum_i);
+    }
+    return maximum;
+}
 
-void calc_summed_area_table(const field_type &field,field_type &table){
+int try_rectangles(field_type &table){
+    int n = table.size();
+    vector<int> sums(n,0);
+    int maximum = numeric_limits<int>::min();
+    for (int i = 0; i < n; ++i) {
+        for (int j = i; j < n; ++j) {
+            for (int k = 0; k < n; ++k) {
+                int A = table[k][j];
+                int B = i > 0 ? table[k][i-1] : 0;
+                sums[k] = A - B;
+            }
+
+            maximum = max(maximum,kadane(sums));
+
+        }
+    }
+    return maximum;
+}
+
+void calc_summed_row_table(const field_type &field,field_type &table){
 
     int n = field.size();
 
-    table[0][0] = field[0][0];
-
-    /*calculate first row and column*/
-    for (int k = 1; k < n; ++k) {
-       table[k][0] = field[k][0] + table[k-1][0];
+    for (int l = 0; l < n; ++l) {
+        table[l][0] = field[l][0];
     }
-    for (int k = 0; k < n; ++k) {
-        table[0][k] = field[0][k] + table[0][k-1];
-    }
-
-    for(int i = 1; i < n; ++i) {
-        for(int j = 1; j<n; ++j){
-            table[i][j] = field[i][j] + table[i-1][j] + table[i][j-1] - table[i-1][j-1];
-        }
-    }
-}
-
-int try_rectangles(const field_type &table){
-
-    int n = table.size();
-    int cost = numeric_limits<int>::min();
-
     for (int i = 0; i < n; ++i) {
-        for (int j = 0; j < n; ++j) {
 
-
-            for (int k = i; k < n; ++k) {
-                for (int l = j; l < n; ++l) {
-
-                    int A = (i > 0 && j > 0) ? table[i-1][j-1] : 0;
-                    int B = i > 0 ? table[i-1][l] : 0;
-                    int C = j > 0 ? table[k][j-1] : 0;
-                    int D = table[k][l];
-
-                    int new_cost = A - B - C + D;
-
-                    if(new_cost > cost){
-                        cost = new_cost;
-                    }
-                }
-            }
-
+        for (int j = 1; j < n; ++j) {
+            table[i][j] = field[i][j] + table[i][j-1];
         }
     }
-
-    return cost;
 }
 
 void print_field(const field_type &field){
@@ -87,7 +78,7 @@ int main() {
         }
     }
 
-    calc_summed_area_table(field,table);
+    calc_summed_row_table(field,table);
 
     /*print_field(field);
     cout << endl;

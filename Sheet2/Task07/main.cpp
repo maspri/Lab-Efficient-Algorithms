@@ -1,46 +1,46 @@
 #include <iostream>
 #include <vector>
 #include <limits>
-#include <map>
+#include <algorithm>
 
 using namespace std;
-int blergh(const vector<int> &coins,int V);
+int blergh(const vector<int> &coins,int coinIndex,int V);
 
-map<int,int> lookup;
+vector<int> lookup;
 
-int mblergh(const vector<int> &coins,int V){
-    map<int,int>::iterator it;
-    it = lookup.find(V);
-    if(it != lookup.end()){
-        return get<1>(*it);
+bool myfunction (int i,int j) { return (i>j); }
+
+/*int mblergh(const vector<int> &coins,int coinStart,int V){
+    if(lookup[V] != -1){
+        return lookup[V];
     } else {
-        return blergh(coins,V);
+        int num = blergh(coins,coinStart,V);
+        lookup[V] = num;
+        return num;
     }
-}
+}*/
 
-int blergh(const vector<int> &coins,int V){
-    if(V > 0){
-        int mincoins = numeric_limits<int>::max();
-        int impossible = 0;
-        for(int i=0;i<coins.size();i++){
-            if(coins[i] <= V){
-                int num = mblergh(coins, V - coins[i]);
-                if(num < mincoins){
-                    mincoins = num;
-                }
-            } else {
-                impossible++;
+int blergh(const vector<int> &coins,int coinIndex,int V){
+    if(V > 0 && coinIndex < coins.size()){
+        //try biggest number of largest coin first
+        int n  = V / coins[coinIndex];
+        for (int j = n; j >= 0; --j) {
+            int num = blergh(coins,coinIndex+1, V - j*coins[coinIndex]);
+            if(num >= 0){
+                return j + num;
             }
         }
-        if(impossible == coins.size()){
-            return -1;
-        } else {
-            return 1 + mincoins;
-        }
-    } else {
-        return 0;
-    }
+        return -1;
 
+    } else if ( V > 0 && coinIndex == coins.size()) {
+
+        return -1;
+
+    } else {
+
+        return 0;
+
+    }
 }
 
 
@@ -52,6 +52,7 @@ int main() {
         int k=0,V=0;
         cin >> k >> V;
         vector<int> coins(k,0);
+        lookup = vector<int>(V*V,-1);
         for(int j=0;j<k;j++){
 
             int b=0,e=0;
@@ -59,13 +60,14 @@ int main() {
             coins[j] = b*b+e*e;
 
         }
-        int num = blergh(coins,V*V);
+        sort(coins.begin(),coins.end(),myfunction);
+        int num = blergh(coins,0,V*V);
         if(num == -1){
             cout << "impossible" << endl;
         } else {
             cout << num << endl;
         }
-        lookup.clear();
+        //lookup.clear();
     }
 
 

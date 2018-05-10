@@ -1,7 +1,10 @@
+#!/usr/bin/env python
 import subprocess
 import glob
 import os
 import sys
+import platform
+from timeit import default_timer as timer
 
 class bcolors:
     HEADER = '\033[95m'
@@ -12,6 +15,16 @@ class bcolors:
     ENDC = '\033[0m'
     BOLD = '\033[1m'
     UNDERLINE = '\033[4m'
+    
+class wcolors:
+    HEADER = ''
+    OKBLUE = ''
+    OKGREEN = ''
+    WARNING = ''
+    FAIL = ''
+    ENDC = ''
+    BOLD = ''
+    UNDERLINE = ''
 
 
 languages = ['*.py','*.java','*.cpp']
@@ -30,16 +43,26 @@ def test_program(program, testcases):
     :param testcases: [(input,expected output),...]
     :return:
     """
+    if platform.system() == 'Windows':
+        colors = wcolors
+    else:
+        colors = bcolors
+    
     for i,(testcase,expOut) in enumerate(testcases):
 
+        t = timer()
         ret = subprocess.run(program, stdout=subprocess.PIPE, shell=True, input=testcase, universal_newlines=True)
+        elapsed_time = timer() - t
 
         if ret.stdout == expOut:
-            print(bcolors.OKGREEN + "Test "+str(i)+" for program \"" +program+"\" successful."+ bcolors.ENDC)
+            print(colors.OKGREEN + "Test "+str(i)+" for program \"" +program+"\" successful."+ colors.ENDC)
+            print(colors.OKGREEN + "Time: "+str(elapsed_time)+ colors.ENDC)
+            print(colors.OKGREEN + "Output:\n" +ret.stdout + colors.ENDC)
         else:
-            print(bcolors.FAIL + "Test "+str(i)+" for program \"" +program+"\" failed." + bcolors.ENDC)
-            print(bcolors.BOLD + "Expected Output:\n" + expOut + bcolors.ENDC)
-            print(bcolors.FAIL + "Given Output:\n" + ret.stdout + bcolors.ENDC)
+            print(colors.FAIL + "Test "+str(i)+" for program \"" +program+"\" failed." + colors.ENDC)
+            print(colors.FAIL + "Time: "+str(elapsed_time)+ colors.ENDC)
+            print(colors.BOLD + "Expected Output:\n" + expOut + colors.ENDC)
+            print(colors.FAIL + "Given Output:\n" + ret.stdout + colors.ENDC)
 
 def test_folder(folder):
     """
