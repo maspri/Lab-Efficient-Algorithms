@@ -1,3 +1,4 @@
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Scanner;
 
@@ -24,12 +25,22 @@ public class Task06 {
 
 		/**
 		 * Method for returning all incident Vertices for a given vertex
-		 * TODO: replace stub
-		 * @param i the vertex of which the incident vertices should be computed
+		 * @param vertex the vertex of which the incident vertices should be computed
 		 * @return array of vertex numbers, the neighbours of i
 		 */
-		public int [] getNeighbours(int i){
-			return new int[]{};
+		public int [] getNeighbours(int vertex){
+			ArrayList<Integer> neighbours = new ArrayList<>(8);
+			for(int i=0; i<adjacencyMatrix.length;i++){
+				if(adjacencyMatrix[vertex][i]){
+					neighbours.add(i);
+				}
+			}
+			 int [] output = new int [neighbours.size()];
+			for(int i=0;i <output.length;i++){
+				output[i]=neighbours.get(i);
+			}
+
+			return output;
 		}
 
 
@@ -37,7 +48,6 @@ public class Task06 {
 
 	/**
 	 * Provides a induced subgrah view on the graph
-	 * TODO: add delegate methods
 	 */
 	public class GraphView{
 
@@ -88,12 +98,16 @@ public class Task06 {
 			}
 		}
 
-		public GraphView cloneAndExlude(int i){
-			return new GraphView(this,i);
+		public GraphView cloneAndExlude(int vertex){
+			return new GraphView(this,vertex);
 		}
 
-		public GraphView cloneAndExlude(int [] is){
-			return new GraphView(this,i);
+		public GraphView cloneAndExlude(int [] vertices){
+			return new GraphView(this,vertices);
+		}
+
+		public int [] getNeighbours(int vertex){
+			return realGraph.getNeighbours(vertex);
 		}
 	}
 
@@ -107,14 +121,17 @@ public class Task06 {
 
 	private int branchAndBound(GraphView graph) {
 		//how to select i?
-		GraphView graphWithVertex = graph.cloneAndExlude();
+		GraphView graphWithVertex = graph.cloneAndExlude(graph.getNeighbours(i));
 		GraphView graphWithoutVertex = graph.cloneAndExlude(i);
-		int excludesVertex = branchAndBound(graph);
-		if(containsVertex>= excludesVertex){
-			return containsVertex+1;
+
+		int sizeIndependetSetWithVertex = branchAndBound(graphWithVertex);
+		int sizeIndependetSetWithoutVertex = branchAndBound(graphWithoutVertex);
+
+		if(sizeIndependetSetWithVertex >= sizeIndependetSetWithoutVertex){
+			return sizeIndependetSetWithVertex+1;
 		}
 		else {
-			return excludesVertex;
+			return sizeIndependetSetWithoutVertex;
 		}
 	}
 
