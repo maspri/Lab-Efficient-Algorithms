@@ -10,7 +10,7 @@ vector<int> lookup;
 
 bool myfunction (int i,int j) { return (i>j); }
 
-/*int mblergh(const vector<int> &coins,int coinStart,int V){
+int mblergh(const vector<int> &coins,int coinStart,int V){
     if(lookup[V] != -1){
         return lookup[V];
     } else {
@@ -18,14 +18,14 @@ bool myfunction (int i,int j) { return (i>j); }
         lookup[V] = num;
         return num;
     }
-}*/
+}
 
 int blergh(const vector<int> &coins,int coinIndex,int V){
     if(V > 0 && coinIndex < coins.size()){
         //try biggest number of largest coin first
         int n  = V / coins[coinIndex];
         for (int j = n; j >= 0; --j) {
-            int num = blergh(coins,coinIndex+1, V - j*coins[coinIndex]);
+            int num = mblergh(coins,coinIndex+1, V - j*coins[coinIndex]);
             if(num >= 0){
                 return j + num;
             }
@@ -61,7 +61,16 @@ int main() {
 
         }
         sort(coins.begin(),coins.end(),myfunction);
-        int num = blergh(coins,0,V*V);
+
+        vector<int> nonzerocoins;
+        nonzerocoins.reserve(coins.size());
+
+        for (int l = 0; l < coins.size(); ++l) {
+            if (coins[i] > 0)
+                nonzerocoins.push_back(coins[i]);
+        }
+
+        int num = blergh(nonzerocoins,0,V*V);
         if(num == -1){
             cout << "impossible" << endl;
         } else {
