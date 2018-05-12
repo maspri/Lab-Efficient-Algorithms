@@ -3,7 +3,7 @@
 CC=g++
 JC=javac
 
-CFLAGS=-g -Wall
+CFLAGS=-g -Wall -O2
 BUILDDIR := build 
 
 CPP_SOURCE=$(wildcard main.cpp)
