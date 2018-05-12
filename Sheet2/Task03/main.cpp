@@ -37,7 +37,7 @@ int main() {
 
         int k = numbers.size();
 
-        cout << ((numbers.size() % 2 == 0) ? (numbers[k/2-1]+numbers[k/2])/2 : numbers[(k+1)/2-1]);
+        cout << ((numbers.size() % 2 == 0) ? (numbers[k/2-1]+numbers[k/2])/2 : numbers[(k+1)/2-1]) << endl;
 
         i++;
     }
