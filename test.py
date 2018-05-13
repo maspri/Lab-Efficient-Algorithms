@@ -104,8 +104,8 @@ def test_folder(folder):
     if os.path.exists(folder+'build/main'):
         test_program(folder+'build/main',[(testcases,testresults)])
 
-    if os.path.exists(folder+'build/main.class'):
-        test_program('java -cp '+folder+'build '+'main',[(testcases,testresults)])
+    if os.path.exists(folder+'main.class'):
+        test_program('java -cp '+folder+' main',[(testcases,testresults)])
 
     if os.path.exists(folder+'main.py'):
         test_program('python '+folder+'main.py',[(testcases,testresults)])
