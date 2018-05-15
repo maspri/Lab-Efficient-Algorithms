@@ -60,11 +60,11 @@ public class Task3 {
                 //output
                 if (bestPrize.isPresent()){
                     // either the minimal costs
-                    System.out.printf(bestPrize.getValue().toString());
+                    System.out.println(bestPrize.getValue().toString());
                 }
                 else {
                     //or say impossible
-                    System.out.printf("impossible");
+                    System.out.println("impossible");
                 }
             }
         }
