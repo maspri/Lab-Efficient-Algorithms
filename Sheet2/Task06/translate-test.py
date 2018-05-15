@@ -18,9 +18,9 @@ def translate(fs):
         
         f.write(str(len(fs))+'\n')
         
-        edges = []
         
         for ff in fs:
+            edges = []
             graph = open(ff,'r')
             lines = graph.readlines()
             
