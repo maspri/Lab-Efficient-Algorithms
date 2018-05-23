@@ -50,7 +50,7 @@ def test_program(program, testcases):
         colors = bcolors
     
     for i,(testcase,expOut) in enumerate(testcases):
-
+        
         t = timer()
         ret = subprocess.run(program, stdout=subprocess.PIPE, shell=True, input=testcase, universal_newlines=True)
         elapsed_time = timer() - t
@@ -58,7 +58,7 @@ def test_program(program, testcases):
         if ret.stdout == expOut:
             print(colors.OKGREEN + "Test "+str(i)+" for program \"" +program+"\" successful."+ colors.ENDC)
             print(colors.OKGREEN + "Time: "+str(elapsed_time)+ colors.ENDC)
-            print(colors.OKGREEN + "Output:\n"+colors.ENDC)
+            print(colors.OKGREEN + "Output:"+colors.ENDC)
             for j,line in enumerate(ret.stdout.split('\n')):
                 print(colors.OKGREEN +line+colors.ENDC)
                 if j >= 20:
@@ -72,10 +72,12 @@ def test_program(program, testcases):
             #print(colors.FAIL + "Given Output:\n" + ret.stdout + colors.ENDC)
             diff = difflib.context_diff(expOut.split('\n'),ret.stdout.split('\n'),'Expected','Given')
             sys.stdout.writelines(diff)
+            print()
             
             diffhtml = difflib.HtmlDiff().make_file(expOut.split('\n'),ret.stdout.split('\n'),'Expected','Given')
             with open('diff.html','w') as f:
                 f.writelines(diffhtml)
+                
 
 def test_folder(folder):
     """
@@ -92,23 +94,34 @@ def test_folder(folder):
     """
     if not folder.endswith('/'):
         folder += '/'
+        
 
-    if os.path.exists(folder+'test.cases'):
-        with open(folder+'test.cases','r') as f:
-            testcases = f.read()
-
-    if os.path.exists(folder+'test.results'):
-        with open(folder+'test.results','r') as f:
-            testresults = f.read()
+    tests = []
+    
+    if os.path.exists(folder+'test.cases') and os.path.exists(folder+'test.results'):
+        with open(folder+'test.cases','r') as f1,open(folder+'test.results','r') as f2:
+            testcases = f1.read()
+            testresults = f2.read()
+            tests += [(testcases,testresults)]
+            
+    
+    
+    cases = glob.glob(folder+'test.cases.*')
+    results = glob.glob(folder+'test.results.*')
+    
+    for case,result in zip(sorted(cases),sorted(results)):
+        with open(case,'r') as f1,open(result,'r') as f2:
+            tests += [(f1.read(),f2.read())]
+    
 
     if os.path.exists(folder+'build/main'):
-        test_program(folder+'build/main',[(testcases,testresults)])
+        test_program(folder+'build/main',tests)
 
     if os.path.exists(folder+'main.class'):
-        test_program('java -cp '+folder+' main',[(testcases,testresults)])
+        test_program('java -cp '+folder+' main',tests)
 
     if os.path.exists(folder+'main.py'):
-        test_program('python '+folder+'main.py',[(testcases,testresults)])
+        test_program('python '+folder+'main.py',tests)
 
 
 if __name__ == '__main__':
