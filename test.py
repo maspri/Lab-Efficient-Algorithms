@@ -110,6 +110,7 @@ def test_folder(folder):
     results = glob.glob(folder+'test.results.*')
     
     for case,result in zip(sorted(cases),sorted(results)):
+        print(case,result)
         with open(case,'r') as f1,open(result,'r') as f2:
             tests += [(f1.read(),f2.read())]
     
@@ -117,8 +118,8 @@ def test_folder(folder):
     if os.path.exists(folder+'build/main'):
         test_program(folder+'build/main',tests)
 
-    if os.path.exists(folder+'main.class'):
-        test_program('java -cp '+folder+' main',tests)
+    if os.path.exists(folder+'build/Main.class'):
+        test_program('java -cp '+folder+'build'+' Main',tests)
 
     if os.path.exists(folder+'main.py'):
         test_program('python '+folder+'main.py',tests)
