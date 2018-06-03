@@ -4,7 +4,7 @@ import java.util.*;
 
 public class Main {
 
-	public static class HeapEntry implements Map.Entry<Integer,Integer> {
+	public static class HeapEntry {
 
 		private int vertex;
 		private int inDegree;
@@ -14,98 +14,83 @@ public class Main {
 			this.inDegree = inDegree;
 		}
 
-
-		@Override
-		public Integer getKey() {
-			return vertex;
-		}
-
-		@Override
-		public Integer getValue() {
+		public Integer getInDegree() {
 			return inDegree;
 		}
 
-		@Override
-		public Integer setValue(Integer integer) {
-			return 0;
+		public Integer getVertex() {
+			return vertex;
 		}
+
 	}
 
-	public static int [] computeTopologicalOrdering(ArrayList<ArrayList<Integer>> dependencyLists){
-		final int numOfVertices = dependencyLists.size();
-		//init
-		boolean [] alreadyVisited = new boolean[numOfVertices]; // the vertices, which are already visited
-		int numOfNotVisited = numOfVertices;
-		int[] visitOrder = new int[numOfVertices];
-
-		Stack<Integer> dfsStack = new Stack<>();
-		Stack<Integer> markingStack = new Stack<>();
-
-		while(numOfNotVisited!=0){
-			int currVertex = numOfVertices-1;//get some not visited node
-			//TODO: make an efficient way
-			//create a list of vertices of degree zero and work this list to its end
-			while(alreadyVisited[currVertex]){
-				currVertex--;
-			}
-
-			//first stage, the dfs search
-			//TODO: this does not work. Maybe push the nieghbours on the marking stack if you also push them on the dfs stack
-			dfsStack.push(currVertex);
-			while (!dfsStack.isEmpty()){ //this stack is not empty....
-
-				currVertex = dfsStack.pop();
-				if(!alreadyVisited[currVertex]){
-				//at the end of this session dfs, we want to write this thing
-					markingStack.push(currVertex);
-					alreadyVisited[currVertex]=true;
-					for(Integer vertex : dependencyLists.get(currVertex)){
-						if(!alreadyVisited[vertex]){
-							dfsStack.push(vertex);
-						}
+	public static int[] computeTopologicalSortingKahn(ArrayList<ArrayList<Integer>> dependencyList, int[] inDegreeCount) {
+		int numNodes = dependencyList.size();
+		//add all nodes in a heap
+		PriorityQueue<HeapEntry> minHeap = new PriorityQueue<>(numNodes * numNodes, new Comparator<HeapEntry>() {
+			@Override
+			public int compare(HeapEntry o1, HeapEntry o2) {
+				if (o1.getInDegree() < o2.getInDegree()) {
+					return -1;
+				} else if (o1.getInDegree() > o2.getInDegree()) {
+					return 1;
+				} else {
+					if (o1.getVertex() < o2.getVertex()) {
+						return -1;
+					} else if (o1.getVertex() > o2.getVertex()) {
+						return 1;
 					}
 				}
+				return 0;
 			}
+		});
 
-			//now we are in the second stage, constructing the visit order
-			while (!markingStack.isEmpty()){
-				visitOrder[numOfNotVisited-1] = markingStack.pop();
-				numOfNotVisited--;
-			}
+		for (int v = 0; v < numNodes; v++) {
+			minHeap.add(new HeapEntry(v, inDegreeCount[v]));
 		}
 
-		return visitOrder;
-
+		//now we are doing Kahns algorithm
+		int[] topologicalSorting = new int[numNodes];
+		for (int i = 0; i < numNodes; i++) {
+			int v = minHeap.poll().getVertex();
+			topologicalSorting[i] = v;
+			for (Integer w : dependencyList.get(v)) {
+				inDegreeCount[w]--;
+				minHeap.add(new HeapEntry(w, inDegreeCount[w]));
+			}
+		}
+		return topologicalSorting;
 	}
 
 	public static void main(String[] args) throws FileNotFoundException {
-		//try (Scanner scanner = new Scanner(System.in)) {
-		try (Scanner scanner = new Scanner(new File("/home/alf/Dokumente/repositories/Lab-Efficient-Algorithms/Sheet3/Task06/test2.cases"))){
+		try (Scanner scanner = new Scanner(System.in)) {
+			//try (Scanner scanner = new Scanner(new File("Sheet3/Task06/test.cases"))){
 			scanner.useLocale(Locale.ENGLISH);
-			while (true){
+			while (true) {
 				int numLemmata = scanner.nextInt(); //number of lemmata
 				int numDependencies = scanner.nextInt(); //number of dependencies
 
 				ArrayList<ArrayList<Integer>> dependencyLists = new ArrayList<>(numLemmata);
-				for(int lemma=0; lemma<numLemmata;lemma++){
+				for (int lemma = 0; lemma < numLemmata; lemma++) {
 					dependencyLists.add(new ArrayList<Integer>(numLemmata));
 				}
 
-				for(int i=0;i<numDependencies;i++){
-					dependencyLists.get(scanner.nextInt()-1).add(scanner.nextInt()-1);
+				int[] inDegreeCount = new int[numLemmata];
+				for (int i = 0; i < numDependencies; i++) {
+					int v = scanner.nextInt() - 1;
+					int w = scanner.nextInt() - 1;
+					dependencyLists.get(v).add(w);
+					inDegreeCount[w]++;
 				}
 
 				//start computation
-				int [] topologicalSorting = computeTopologicalOrdering(dependencyLists);
-				for(int i=0; i<numLemmata;i++){
-					topologicalSorting[i]++;
-				}
-				for(int i=0;i<numLemmata;i++){
-					System.out.print((i+1)+" ");
+				int[] topologicalSorting = computeTopologicalSortingKahn(dependencyLists, inDegreeCount);
+				for (int i = 0; i < numLemmata; i++) {
+					System.out.print((topologicalSorting[i] + 1) + " ");
 				}
 				System.out.print("\n");
 
-				if(scanner.nextInt() == 0 && scanner.nextInt()==0){
+				if (scanner.nextInt() == 0 && scanner.nextInt() == 0) {
 					break;
 				}
 			}
