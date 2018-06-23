@@ -39,8 +39,8 @@ def calc_opt(N,Q,capacity_speed,distances,queries):
     return dists
 
 def gen_single(f1,f2):
-    N = 10
-    Q = 20
+    N = 5
+    Q = 10
     
     f1.write(str(N)+' '+str(Q)+'\n')
     
@@ -53,7 +53,7 @@ def gen_single(f1,f2):
         #locations[i,0] = randint(1,150)
         #locations[i,1] = randint(1,150)
         capacity_speed[i,0] = random.randint(10,20)
-        capacity_speed[i,1] = 1#random.randint(1,20)
+        capacity_speed[i,1] = random.randint(1,20)
         f1.write(str(capacity_speed[i,0])+' '+str(capacity_speed[i,1])+'\n')
     
     for i in range(N):
