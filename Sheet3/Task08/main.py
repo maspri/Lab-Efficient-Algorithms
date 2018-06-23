@@ -8,7 +8,7 @@ def bfs_list_fifo(graph, start):
     bfs_fifo = [start]
 
     while bfs_fifo:
-        u = bfs_fifo.pop()
+        u = bfs_fifo.pop(0)
         # u is current vertex
         u_adjacent = graph[u]
         for v in u_adjacent:
@@ -50,8 +50,11 @@ for test in range(tests):
     l += 1
 
     paths = [bfs_list_fifo(graph, bc), bfs_list_fifo(graph, k)]
+    path_sums = []
+    for i in range(N):
+        path_sums.append(paths[0][i] + paths[1][i])
 
-    longest_shortest_path = max([sum(x) for x in zip(*paths)])
+    longest_shortest_path = max(path_sums)
     print("Case " + str(test + 1) + ": " + str(longest_shortest_path))
 
 

@@ -25,13 +25,15 @@ public class Main {
 	private static double approximateIntersection(Ellipse e1, Ellipse e2, double[][] samples) {
 		double integral = 0;
 		for (double[] sample : samples) {
-			integral += partOf(e1, sample) && partOf(e2, sample) ? 1 : 0;
+			integral += containedIn(e1, sample) && containedIn(e2, sample) ? 1 : 0;
 		}
 		return integral / samples.length;
 	}
 
-	private static boolean partOf(Ellipse e1, double[] sample) {
-		//TODO
+	private static boolean containedIn(Ellipse e, double[] sample) {
+		double a1 = Math.sqrt((e.x1 - sample[0]) * (e.x1 - sample[0]) + (e.y1 - sample[1]) * (e.y1 - sample[1]));
+		double a2 = Math.sqrt((e.x2 - sample[0]) * (e.x2 - sample[0]) + (e.y2 - sample[1]) * (e.y2 - sample[1]));
+		return a1 + a2 <= e.r;
 	}
 
 	public static void main(String[] args) throws IOException {
@@ -82,7 +84,7 @@ public class Main {
 				samples[sample][0] = Double.valueOf(line.substring(0, whitespacePosition));
 				samples[sample][1] = Double.valueOf(line.substring(whitespacePosition, line.length()));
 			}
-			System.out.println(new DecimalFormat("#.###").format(approximateIntersection(e1, e2, samples)));
+			System.out.println(new DecimalFormat("0.000").format(approximateIntersection(e1, e2, samples)));
 
 		}
 	}
