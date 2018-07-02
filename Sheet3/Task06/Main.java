@@ -6,7 +6,7 @@ public class Main {
 	public static int[] computeTopologicalSortingKahn(ArrayList<ArrayList<Integer>> dependencyList, int[] inDegreeCount) {
 		int numNodes = dependencyList.size();
 		//add all nodes in a heap
-		PriorityQueue<Integer> minHeap = new PriorityQueue<>(numNodes);
+		PriorityQueue<Integer> minHeap = new PriorityQueue<>();
 		for (int v = 0; v < numNodes; v++) {
 			if (inDegreeCount[v] == 0) {
 				minHeap.add(v);
@@ -37,8 +37,8 @@ public class Main {
 	}
 
 	public static void main(String[] args) throws IOException {
-		//try (BufferedReader reader = new BufferedReader(new InputStreamReader(System.in))) {
-			try (BufferedReader reader = new BufferedReader(new FileReader("Sheet3/Task06/test.cases"))) {
+		try (BufferedReader reader = new BufferedReader(new InputStreamReader(System.in))) {
+			//try (BufferedReader reader = new BufferedReader(new FileReader("Sheet3/Task06/test.cases"))) {
 			while (true) {
 				String line = reader.readLine();
 				int whitespacePosition = getWhiteSpace(line);
@@ -49,11 +49,9 @@ public class Main {
 					break;
 				}
 
-				//ArrayList<Integer> [] dependencyLists = new ArrayList[numLemmata];
-				//Arrays.fill(dependencyLists, new ArrayList<Integer>(numLemmata));
 				ArrayList<ArrayList<Integer>> dependencyLists = new ArrayList<>(numLemmata);
 				for (int lemma = 0; lemma < numLemmata; lemma++) {
-					dependencyLists.add(new ArrayList<Integer>(numLemmata));
+					dependencyLists.add(new ArrayList<Integer>());
 				}
 
 				int[] inDegreeCount = new int[numLemmata];
@@ -63,14 +61,13 @@ public class Main {
 					int v = Integer.valueOf(line.substring(0, whitespacePosition)) - 1;
 					int w = Integer.valueOf(line.substring(whitespacePosition + 1, line.length())) - 1;
 					dependencyLists.get(v).add(w);
-					//dependencyLists[v].add(w);
 					inDegreeCount[w]++;
 				}
 
 				//start computation
 				int[] topologicalSorting = computeTopologicalSortingKahn(dependencyLists, inDegreeCount);
-				for (int i = 0; i < numLemmata; i++) {
-					System.out.print((topologicalSorting[i] + 1) + " ");
+				for (Integer i : topologicalSorting) {
+					System.out.print((i + 1) + " ");
 				}
 				System.out.print("\n");
 			}
