@@ -41,6 +41,7 @@ void deleteshortest2(int start,int goal,vector<vector<int >> &distances,
     int n = distances.size();
     queue<int> q1;
     q1.push(goal);
+    can_use[goal] = -1;
     while(!q1.empty()) {
         int k = q1.front();
         q1.pop();

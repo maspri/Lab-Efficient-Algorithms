@@ -6,6 +6,7 @@
 #include <fstream>
 #include <sstream>
 #include <string>
+#include <assert.h>
 
 using namespace std;
 
@@ -63,15 +64,42 @@ double bfs(int N,int start, int goal, const vector<node> &nodes,vector<int> &pre
     }
 }
 
-double edmond_karp(int n,int source,int sink,vector<node> &nodes){
-    vector<int> prev(n,-1);
+void augment(int v,int w,double &flow,double df,
+             vector<node> &nodes){
+    for(auto &ttt: nodes[w].out){
+        if(ttt.index == v){
+            ttt.flow -= df;
+        }
+    }
 
+    flow += df;
+}
+
+double augment_along_path(vector<int> prev,int w,double min_df,vector<node> &nodes){
+    int v = prev[w];
+    for (auto &e: nodes[v].out) {
+        if (e.index == w  ) {
+            if(e.capacity - e.flow > 0.0 && e.capacity - e.flow < min_df) {
+                min_df = augment_along_path(prev, v, e.capacity - e.flow, nodes);
+            } else{
+                min_df = augment_along_path(prev, v, min_df, nodes);
+            }
+            augment(v,w,e.flow,min_df,nodes);
+            return min_df;
+        }
+    }
+}
+
+
+double edmond_karp(int n,int source,int sink,vector<node> &nodes){
+
+    vector<int> prev(n,-1);
     while(bfs(n,source,sink,nodes,prev) != -1){
         int v=prev[sink],w=sink;
         double df = numeric_limits<double >::max();
         while(v != -1) {
             for (auto &e: nodes[v].out) {
-                if (e.index == w && e.capacity - e.flow < df) {
+                if (e.index == w && e.capacity - e.flow > 0 &&  e.capacity - e.flow < df) {
                     df = e.capacity - e.flow;
                 }
             }
@@ -81,13 +109,14 @@ double edmond_karp(int n,int source,int sink,vector<node> &nodes){
         v=prev[sink],w=sink;
         while(v != -1) {
             for (auto &e: nodes[v].out) {
-                if (e.index == w) {
-                    e.flow += df;
+                if (e.index == w && e.capacity - e.flow > 0) {
+                    augment(v,w,e.flow,df,nodes);
                 }
             }
             w = v;
             v = prev.at(v);
         }
+
 
     }
 
@@ -97,6 +126,62 @@ double edmond_karp(int n,int source,int sink,vector<node> &nodes){
     }
 
     return flow;
+
+}
+
+void read_dimacs(){
+    ifstream infile("../104_0412_16bins.max");
+    std::string line;
+    int n,m;
+
+    while (std::getline(infile, line))
+    {
+        istringstream iss(line);
+        char c;
+        iss >> c;
+
+        if(c == 'p') {
+            for (int i = 0; i < 3; ++i) {
+                iss >> c;
+            }
+            iss >> n >> m;
+            break;
+        }
+    }
+
+
+    int source,sink;
+    vector<node> nodes(n,node());
+
+    while (std::getline(infile, line))
+    {
+        istringstream iss(line);
+        char c;
+        iss >> c;
+        int v,w,cc;
+        switch (c){
+            case 'c':
+                break;
+            case 'n':
+                int tmp;
+                char which;
+                iss >> tmp >> which;
+                if(which == 's'){
+                    source = tmp-1;
+                } else {
+                    sink = tmp-1;
+                }
+                break;
+            case 'a':
+                iss >> v >> w >> cc;
+                nodes[v-1].out.emplace_back(w-1,cc,0.0);
+                nodes[w-1].out.emplace_back(v-1,0.0,0.0);
+                break;
+
+        }
+
+    }
+    cout << edmond_karp(n,source,sink,nodes) << endl;
 
 }
 
@@ -113,7 +198,7 @@ vector<int > read_sources_or_sinks(){
 
 int main() {
 
-    int t = 0;
+    /*int t = 0;
     cin >> t;
 
     for (int i = 0; i < t; ++i) {
@@ -132,6 +217,7 @@ int main() {
             v++;
             w++;
             nodes[v].out.emplace_back(w,c,0.0);
+            nodes[w].out.emplace_back(v,0.0,0.0);
             auto it = find(sinks.cbegin(),sinks.cend(),w);
             if(it != sinks.end()){
                 sink_capacities[distance(sinks.cbegin(),it)] += c;
@@ -141,15 +227,19 @@ int main() {
         //add single source and sink nodes and connect them to each source and sink
         for (auto const &v:sources) {
             nodes[0].out.emplace_back(v,nodes[v].get_sum_out_cap(),0.0);
+            nodes[v].out.emplace_back(0,0.0,0.0);
         }
         for (int j = 0;j<sinks.size();j++) {
             nodes[sinks[j]].out.emplace_back(n+1,sink_capacities[j],0.0);
+            nodes[n+1].out.emplace_back(sinks[j],0.0,0.0);
         }
 
         cout.precision(2);
         cout << fixed << edmond_karp(n+2,0,n+1,nodes) << endl;
 
-    }
+    }*/
+
+    read_dimacs();
 
     return 0;
 }
