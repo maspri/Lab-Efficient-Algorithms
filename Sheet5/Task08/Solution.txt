@@ -1,0 +1,4 @@
+We would suggest to use (Hard margin) supportvector machines A and B(with appropiate Kernels).
+At first we train A with the points labeled with 'a' as positive examples and the rest as negative ones.
+In the second step we would do the same with B and use the points labeled with 'b' as positive examples.
+In the last step we compute the two polygons from the support Vectors of A and B.
