@@ -16,7 +16,7 @@ struct point{
 };
 
 bool is_close(double a, double b){
-    return abs(a-b) < 1E-5;
+    return abs(a-b) < 1E-8;
 }
 
 int main() {
@@ -24,8 +24,6 @@ int main() {
     int n = 0;
     cin >> n;
     vector<point> points(n,point(0.0,0.0));
-
-
 
     for (int i = 0; i < n; ++i) {
         cin >> points[i].x >> points[i].y;
@@ -40,7 +38,15 @@ int main() {
             if(i == j){
                 continue;
             }
-            slope[m] = (points[j].y-points[i].y)/(points[j].x-points[i].x);
+            if(points[j].x-points[i].x == 0 && points[j].y-points[i].y > 0){
+                slope[m] = numeric_limits<double>::max();
+            } else if(points[j].x-points[i].x == 0 && points[j].y-points[i].y < 0){
+                slope[m] = numeric_limits<double>::lowest();
+            } else if(points[j].x-points[i].x == 0 && points[j].y-points[i].y == 0){
+                slope[m] = 0;
+            } else {
+                slope[m] = (points[j].y-points[i].y)/(points[j].x-points[i].x);
+            }
             m++;
         }
 
@@ -56,16 +62,16 @@ int main() {
                     max_so_far = count;
                 }
                 count = 1;
+                last = slope[k];
             }
-            last = slope[k];
         }
         if(max_so_far > max_num){
+            //+1 because the point considered at the moment is not in the slope array
             max_num = max_so_far+1;
         }
     }
 
     cout << max_num << endl;
-
 
     return 0;
 }

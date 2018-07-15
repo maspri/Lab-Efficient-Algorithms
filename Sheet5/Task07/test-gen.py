@@ -19,8 +19,8 @@ def gen_single(f1,f2):
         sx = random.randint(-100,100)
         sy = random.randint(-100,100)
         
-        dirX = random.randint(-10,10)
-        dirY = random.randint(-10,10)
+        dirX = 10#random.randint(-10,10)
+        dirY = 0#random.randint(-10,10)
         
         n = random.randint(1,N-num);
         if n > maxnum:
@@ -53,5 +53,5 @@ def gen_test(num):
             
 
 if __name__ == '__main__':
-    gen_test(10)
+    gen_test(1)
     

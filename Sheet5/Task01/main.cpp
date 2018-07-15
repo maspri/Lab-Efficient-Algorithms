@@ -120,10 +120,10 @@ int main() {
 
     while(1) {
         //read in instance
-        int B = 0,S = 0;
+        int B = 0, S = 0;
         cin >> B >> S;
 
-        if(B==0 && S == 0){
+        if (B == 0 && S == 0) {
             break;
         }
 
@@ -134,17 +134,17 @@ int main() {
          * Add two edges (v,v') and (v',v) with capacity set to the cost of destruction of
          * v.
          */
-        vector<node> nodes(2*B,node());
+        vector<node> nodes(2 * B, node());
 
-        for (int l = 0; l < B-2; ++l) {
-            int node,cost;
+        for (int l = 0; l < B - 2; ++l) {
+            int node, cost;
             cin >> node >> cost;
             node--;
-            nodes[node].out.emplace_back(node+B,cost,0.0);
-            nodes[node+B].out.emplace_back(node,cost,0.0);
+            nodes[node].out.emplace_back(node + B, cost, 0.0);
+            nodes[node + B].out.emplace_back(node, cost, 0.0);
         }
 
-        nodes[0].out.emplace_back(B,nodes[B].get_sum_out_cap(),0.0);
+        //nodes[0].out.emplace_back(B, nodes[B].get_sum_out_cap(), 0.0);
 
         for (int k = 0; k < S; ++k) {
             int v,w;
