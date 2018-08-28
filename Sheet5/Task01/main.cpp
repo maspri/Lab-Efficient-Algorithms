@@ -153,7 +153,9 @@ int main() {
             v--;
             w--;
             nodes[v+B].out.emplace_back(w,c,0.0);
+            nodes[w].out.emplace_back(v+B,0.0,0.0);
             nodes[w+B].out.emplace_back(v,0.0,0.0);
+            nodes[v].out.emplace_back(w+B,0.0,0.0);
         }
 
         cout.precision(0);
