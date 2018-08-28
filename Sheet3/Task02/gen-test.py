@@ -3,6 +3,9 @@ import itertools
 import numpy as np
 import math
 
+"""
+    Creates invalid test results (giving them the wrong value!) 
+"""
 def find_max_prob(probs,k):
     n = len(probs)
     
@@ -62,6 +65,6 @@ def gen_test(num):
                 
 
 if __name__ == '__main__':
-    #gen_test(1)
+    gen_test(10)
     #print(find_max_prob([0.43,0.51,0.05,0.43,0.28],4))
-    print(find_max_prob([0.1,0.3,0.9,0.6,0.5,0.3,0.9,0.5],4))
+    #print(find_max_prob([0.1,0.3,0.9,0.6,0.5,0.3,0.9,0.5],4))

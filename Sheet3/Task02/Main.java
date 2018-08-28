@@ -1,4 +1,5 @@
 import java.text.DecimalFormat;
+import java.text.DecimalFormatSymbols;
 import java.util.*;
 
 public class Main {
@@ -88,7 +89,7 @@ public class Main {
 	 * @param probabilities array of values between 0 and 1 representing the probability of candidate i voting for an increase of workload
 	 * @return the maximum probability of a tie
 	 */
-	public static double lazyTeacher(int k, final double[] probabilities) {
+	public static double lazyMyAss(int k, final double[] probabilities) {
 
 		int[] committee = new int[k];
 
@@ -163,6 +164,58 @@ public class Main {
 		return probabiliyOfTie;
 	}
 
+	/**
+	 * Computes the Probability for a draw with a dynamic programming approach
+	 *
+	 * @param k number of Members in the comittee
+	 * @param probabilitiesOfCurrentCouncil the probabilites of each comitee member
+	 * @return
+	 */
+	public static double computeProbability(int k, double[] probabilitiesOfCurrentCouncil) {
+		double[][] dynamicProgrammingTable = new double[k][k / 2 + 1];
+
+		//fills the first column of the table
+		dynamicProgrammingTable[0][0] = 1 - probabilitiesOfCurrentCouncil[0];
+		for (int numOfMembersMinusOne = 1; numOfMembersMinusOne < k; numOfMembersMinusOne++) {
+			dynamicProgrammingTable[numOfMembersMinusOne][0] = dynamicProgrammingTable[numOfMembersMinusOne - 1][0] * (1 - probabilitiesOfCurrentCouncil[numOfMembersMinusOne]);
+		}
+
+		//fill the first row of the table, i.e. the second column where the only meber says "yes"
+		dynamicProgrammingTable[0][1] = probabilitiesOfCurrentCouncil[0];
+
+		//fill the rest
+		for (int numOfMembersMinusOne = 1; numOfMembersMinusOne < k; numOfMembersMinusOne++) {
+			for (int numOfYesSayers = 1; numOfYesSayers < (numOfMembersMinusOne / 2 + 2); numOfYesSayers++) {
+				dynamicProgrammingTable[numOfMembersMinusOne][numOfYesSayers] = (1 - probabilitiesOfCurrentCouncil[numOfMembersMinusOne]) * dynamicProgrammingTable[numOfMembersMinusOne - 1][numOfYesSayers] + probabilitiesOfCurrentCouncil[numOfMembersMinusOne] * dynamicProgrammingTable[numOfMembersMinusOne - 1][numOfYesSayers - 1];
+			}
+		}
+
+		return dynamicProgrammingTable[k - 1][k / 2];
+	}
+
+	public static double lazyTeacher(int numOfCommiteeMembers, double probabilities[]) {
+		double maxProbabilityForDraw = 0;
+		//TODO: evtl. bereits beim einlesen sortieren!
+		Arrays.sort(probabilities);
+		double[] probabilitiesOfCurrentCouncil = Arrays.copyOfRange(probabilities, 0, numOfCommiteeMembers);
+		//the two indices indicating the last student from the left side and the first student of the right side
+		int leftEnd = numOfCommiteeMembers - 1;
+		int rightBegin = probabilities.length;
+		for (int i = 0; i < numOfCommiteeMembers; i++) {
+			double currProbabilityForDraw = computeProbability(numOfCommiteeMembers, probabilitiesOfCurrentCouncil);
+			if (maxProbabilityForDraw < currProbabilityForDraw) {
+				maxProbabilityForDraw = currProbabilityForDraw;
+			}
+			leftEnd--;
+			rightBegin--;
+			System.out.println("Probabilites of current council: "+Arrays.toString(probabilitiesOfCurrentCouncil)+" with probability "+currProbabilityForDraw);
+			// [ 0.001----  leftEnd ----- rightBegin -------  0.22]
+			// [0.001 -  leftEnd -- rightBegin]
+			probabilitiesOfCurrentCouncil[numOfCommiteeMembers - i - 1] = probabilities[rightBegin];
+		}
+		return maxProbabilityForDraw;
+	}
+
 	public static void main(String[] args) {
 		try (Scanner scanner = new Scanner(System.in)) {
 			scanner.useLocale(Locale.ENGLISH);
@@ -172,10 +225,8 @@ public class Main {
 			for (int i = 0; i < n; i++) {
 				probabilities[i] = scanner.nextDouble();
 			}
-
-			System.out.println(new DecimalFormat("#.##").format(lazyTeacher(k, probabilities)));
-			//binaryReflectedGrayCode(4);
-			//bRGCWithFixedWeight(6,3);
+			//Locale.setDefault(Locale.ENGLISH);
+			System.out.println(new DecimalFormat("0.00").format(lazyTeacher(k, probabilities)));
 		}
 	}
 
