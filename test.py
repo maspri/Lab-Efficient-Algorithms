@@ -49,7 +49,7 @@ def test_program(program, testcases):
     else:
         colors = bcolors
     
-    for i,(testcase,expOut) in enumerate(testcases):
+    for i,(namecase,testcase,nameout,expOut) in enumerate(testcases):
         
         t = timer()
         ret = subprocess.run(program, stdout=subprocess.PIPE, shell=True, input=testcase, universal_newlines=True)
@@ -67,9 +67,10 @@ def test_program(program, testcases):
                 
         else:
             print(colors.FAIL + "Test "+str(i)+" for program \"" +program+"\" failed." + colors.ENDC)
+            print(colors.FAIL + "Test file: \""+namecase+"\" result file: \"" +nameout+"\"" + colors.ENDC)
             print(colors.FAIL + "Time: "+str(elapsed_time)+ colors.ENDC)
-            #print(colors.BOLD + "Expected Output:\n" + expOut + colors.ENDC)
-            #print(colors.FAIL + "Given Output:\n" + ret.stdout + colors.ENDC)
+            print(colors.BOLD + "Expected Output:\n" + expOut + colors.ENDC)
+            print(colors.FAIL + "Given Output:\n" + ret.stdout + colors.ENDC)
             diff = difflib.context_diff(expOut.split('\n'),ret.stdout.split('\n'),'Expected','Given')
             sys.stdout.writelines(diff)
             print()
@@ -102,7 +103,7 @@ def test_folder(folder):
         with open(folder+'test.cases','r') as f1,open(folder+'test.results','r') as f2:
             testcases = f1.read()
             testresults = f2.read()
-            tests += [(testcases,testresults)]
+            tests += [('test.cases',testcases,'test.results',testresults)]
             
     
     
@@ -110,9 +111,8 @@ def test_folder(folder):
     results = glob.glob(folder+'test.results.*')
     
     for case,result in zip(sorted(cases),sorted(results)):
-        print(case,result)
         with open(case,'r') as f1,open(result,'r') as f2:
-            tests += [(f1.read(),f2.read())]
+            tests += [(case,f1.read(),result,f2.read())]
     
 
     if os.path.exists(folder+'build/main'):
