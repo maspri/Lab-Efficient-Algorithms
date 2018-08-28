@@ -162,3 +162,7 @@ venv.bak/
 
 # mypy
 .mypy_cache/
+
+# Lab specific
+test.results*
+test.cases*

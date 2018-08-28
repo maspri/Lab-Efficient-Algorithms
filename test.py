@@ -86,7 +86,7 @@ def test_folder(folder):
     test.cases
     test.results
     build/main          -- optional
-    build/main.class    -- optional
+    out/main.class    -- optional
     main.py             -- optional
 
     if found, reads in testcases and tests each program that was found.
@@ -118,8 +118,8 @@ def test_folder(folder):
     if os.path.exists(folder+'build/main'):
         test_program(folder+'build/main',tests)
 
-    if os.path.exists(folder+'build/Main.class'):
-        test_program('java -cp '+folder+'build'+' Main',tests)
+    if os.path.exists(folder+'out/Main.class'):
+        test_program('java -cp '+folder+'out/'+' Main',tests)
 
     if os.path.exists(folder+'main.py'):
         test_program('python '+folder+'main.py',tests)

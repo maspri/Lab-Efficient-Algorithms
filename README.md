@@ -7,7 +7,7 @@ Das Skript sucht nach den Dateien
   * test.cases
   * test.results
   * build/main          -- optional
-  * build/main.class    -- optional
+  * out/Main.class    -- optional
   * main.py             -- optional
 
 und führt die, die es findet mit den gegebenen TestCases aus (im Moment nur den einen, aber die Aufgaben scheinen eh so designed zu sein das eine Datei reichen wird.)
