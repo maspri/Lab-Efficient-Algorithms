@@ -51,7 +51,7 @@ def gen_test(num):
         else:
             numberstr = str(k)
         with open('test.cases.' + numberstr, 'w') as f1, open('test.results.' + numberstr, 'w') as f2:
-            n = 5#random.randint(2,15)
+            n = random.randint(2,15)
             k = random.randint(1,n//2)*2
             probs = np.zeros(n)
             f1.write(str(n)+' '+str(k)+'\n')
@@ -60,11 +60,11 @@ def gen_test(num):
                 probs[i] = float('{:0.2f}'.format(tmp))
                 f1.write('{:0.2f}\n'.format(tmp))
             max_prob,max_committee = find_max_prob(probs,k)
-            f2.write('{:0.2f}'.format(max_prob)+'\n')
-            f2.write('('+','.join(map(str,max_committee))+')')
+            f2.write('{:0.2f}'.format(max_prob))
+            #f2.write('('+','.join(map(str,max_committee))+')')
                 
 
 if __name__ == '__main__':
-    gen_test(10)
+    gen_test(20)
     #print(find_max_prob([0.43,0.51,0.05,0.43,0.28],4))
     #print(find_max_prob([0.1,0.3,0.9,0.6,0.5,0.3,0.9,0.5],4))

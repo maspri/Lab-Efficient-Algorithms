@@ -6,32 +6,45 @@
 
 using namespace std;
 
-double prob(vector<double> &probs,int j,int kh){
-    if (j == probs.size()-1 && kh == 0){
-        return 1-probs[j];
-    } else if(j == probs.size()-1 && kh == 1){
-        return probs[j];
-    } else if(j < probs.size() && kh == 0){
-        return (1 - probs[j]) * prob(probs, j + 1, kh);
-    } else if(probs.size() - j == kh){
-        return probs[j] * prob(probs, j + 1, kh - 1);
-    } else {
-        return probs[j] * prob(probs, j + 1, kh - 1) + (1 - probs[j]) * prob(probs, j + 1, kh);
+double prob(vector<double> &probs,int k){
+    vector<vector<double>> table(k,vector<double>(k,0.0));
+    table[0][0] = 1-probs[0];
+    table[0][1] = probs[0];
+
+    for (int i = 1; i < k; ++i) {
+        table[i][0] = (1-probs[i])*table[i-1][0];
+        for (int j = 1; j < k; ++j) {
+            table[i][j] = (1-probs[i])*table[i-1][j] + probs[i]*table[i-1][j-1];
+        }
     }
+
+    return table[k-1][k/2];
 }
 
 double find_max_prob(vector<double> &probs,int k){
     int n = probs.size();
     sort(probs.begin(),probs.end());
 
-    vector<double > probs2;
-    for (int i = 0; i < k/2; ++i) {
-        probs2.push_back(probs[i]);
-        probs2.push_back(probs[n-i-1]);
+    double max_prob = 0.0;
+
+    vector<double> probs2(k,0.0);
+    for (int i = 0; i < k; ++i) {
+        probs2[i] = probs[i];
     }
 
-    return prob(probs2,0,k/2);
+    max_prob = prob(probs2,k);
 
+    int r = probs.size()-1;
+    for (int j = k-1; j >= 0 ; j--) {
+        probs2[j] = probs[r];
+        r--;
+        double tmp = prob(probs2,k);
+        if (tmp > max_prob){
+            max_prob = tmp;
+        }
+    }
+
+    return max_prob;
 }
 
 int main() {
@@ -49,7 +62,7 @@ int main() {
     }
     double max = find_max_prob(probs,k);
     cout.precision(2);
-    cout << max;
+    cout << fixed << max;
 
     return 0;
 }

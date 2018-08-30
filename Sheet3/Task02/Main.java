@@ -172,7 +172,7 @@ public class Main {
 	 * @return
 	 */
 	public static double computeProbability(int k, double[] probabilitiesOfCurrentCouncil) {
-		double[][] dynamicProgrammingTable = new double[k][k / 2 + 1];
+		double[][] dynamicProgrammingTable = new double[k][k/*k / 2 + 1*/];
 
 		//fills the first column of the table
 		dynamicProgrammingTable[0][0] = 1 - probabilitiesOfCurrentCouncil[0];
@@ -185,7 +185,7 @@ public class Main {
 
 		//fill the rest
 		for (int numOfMembersMinusOne = 1; numOfMembersMinusOne < k; numOfMembersMinusOne++) {
-			for (int numOfYesSayers = 1; numOfYesSayers < (numOfMembersMinusOne / 2 + 2); numOfYesSayers++) {
+			for (int numOfYesSayers = 1; numOfYesSayers < k/*(numOfMembersMinusOne / 2 + 2)*/; numOfYesSayers++) {
 				dynamicProgrammingTable[numOfMembersMinusOne][numOfYesSayers] = (1 - probabilitiesOfCurrentCouncil[numOfMembersMinusOne]) * dynamicProgrammingTable[numOfMembersMinusOne - 1][numOfYesSayers] + probabilitiesOfCurrentCouncil[numOfMembersMinusOne] * dynamicProgrammingTable[numOfMembersMinusOne - 1][numOfYesSayers - 1];
 			}
 		}
@@ -208,7 +208,7 @@ public class Main {
 			}
 			leftEnd--;
 			rightBegin--;
-			System.out.println("Probabilites of current council: "+Arrays.toString(probabilitiesOfCurrentCouncil)+" with probability "+currProbabilityForDraw);
+			//System.out.println("Probabilites of current council: "+Arrays.toString(probabilitiesOfCurrentCouncil)+" with probability "+currProbabilityForDraw);
 			// [ 0.001----  leftEnd ----- rightBegin -------  0.22]
 			// [0.001 -  leftEnd -- rightBegin]
 			probabilitiesOfCurrentCouncil[numOfCommiteeMembers - i - 1] = probabilities[rightBegin];
@@ -226,7 +226,7 @@ public class Main {
 				probabilities[i] = scanner.nextDouble();
 			}
 			//Locale.setDefault(Locale.ENGLISH);
-			System.out.println(new DecimalFormat("0.00").format(lazyTeacher(k, probabilities)));
+			System.out.print(new DecimalFormat("0.00").format(lazyTeacher(k, probabilities)));
 		}
 	}
 
